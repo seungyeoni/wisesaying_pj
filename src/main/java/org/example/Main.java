@@ -33,13 +33,25 @@ public class Main {
                 }
             }else if((i.contains("삭제?id="))==true){
                 int remove_id = Integer.parseInt(i.substring(6));
-                write.remove(remove_id-1);
-                System.out.println(remove_id+"번 명언이 삭제되었습니다.");
+                int get_remove_id = -1;
+                for (Wise w : write){
+                    if(w.getId() == remove_id){
+                        get_remove_id = w.getId();
+                    }
+                }
+                try{
+                    write.remove(write.get(get_remove_id));
+                    System.out.println(remove_id+"번 명언이 삭제되었습니다.");
+                }catch(IndexOutOfBoundsException e){
+                    System.out.println(remove_id+"번 명언은 존재하지 않습니다.");
+                }
             }
         }
         sc.close();
     }
 }
+
+
 class Wise{
     private int id;
     private String wise;
@@ -49,6 +61,10 @@ class Wise{
         this.id = id;
         this.wise = wise;
         this.writer = writer;
+    }
+
+    public int getId() {
+        return id;
     }
 
     @Override
