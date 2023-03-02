@@ -1,8 +1,10 @@
 package org.example;
 
+import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
+
 import java.io.*;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Scanner;
 
@@ -63,9 +65,9 @@ public class Main {
             }else if((i.contains("삭제?id="))==true){
                 int remove_id = Integer.parseInt(i.substring(6));
                 int get_remove_id = -1;
-                for (Wise w : write){
-                    if(w.getId() == remove_id){
-                        get_remove_id = w.getId();
+                for (int i_remove=0;i_remove<write.size();i_remove++){
+                    if(write.get(i_remove).getId() == remove_id){
+                        get_remove_id = i_remove;
                     }
                 }
                 try{
@@ -76,28 +78,54 @@ public class Main {
                 }
             }else if((i.contains("수정?id="))==true){
                 int correction_id = Integer.parseInt(i.substring(6));
-                Wise get_correction_id = null;
-                for (Wise w : write){
-                    if(w.getId() == correction_id){
-                        get_correction_id = w;
+                int get_correction_id=-1;
+                for (int i_correction = 0; i_correction<write.size();i_correction++){
+                    if(write.get(i_correction).getId() == correction_id){
+                        get_correction_id = i_correction;
                     }
                 }
                 try{
-                    System.out.println("명언(기존) : "+ get_correction_id.getWise());
+                    System.out.println("명언(기존) : "+ write.get(get_correction_id).getWise());
                     System.out.printf("명언 : ");
-                    get_correction_id.setWise(sc.nextLine());
+                    write.get(get_correction_id).setWise(sc.nextLine());
 
-                    System.out.println("작가(기존) : "+ get_correction_id.getWriter());
+                    System.out.println("작가(기존) : "+ write.get(get_correction_id).getWriter());
                     System.out.printf("작가 : ");
-                    get_correction_id.setWriter(sc.nextLine());
-                }catch(IndexOutOfBoundsException e){
+                    write.get(get_correction_id).setWriter(sc.nextLine());
+                }catch(Exception e){
                     System.out.println(correction_id+"번 명언은 존재하지 않습니다.");
                 }
+            }else if(i.equals("빌드")){
+                try{
+                    JSONArray jsonArray = new JSONArray();
+                    for(int k=0;k<write.size();k++){
+                        JSONObject jsonObject = new JSONObject();
+                        jsonObject.put("id", write.get(k).getId());
+                        jsonObject.put("content", write.get(k).getWise());
+                        jsonObject.put("author", write.get(k).getWriter());
+                        jsonArray.add(jsonObject);
+                    }
+                    try{
+                        FileWriter fileWriter = new FileWriter("data.json");
+                        fileWriter.write(jsonArray.toString());
+                        fileWriter.flush();
+                        fileWriter.close();
+                        System.out.println("data.json 파일의 내용이 갱신되었습니다.");
+                    }catch(IOException e){
+                        e.printStackTrace();
+                    }
+                }catch(Exception e){
+                    e.printStackTrace();
+                }
+
             }
         }
         sc.close();
     }
 }
+
+
+
 
 
 class Wise{
