@@ -1,5 +1,6 @@
 package org.example;
 
+import java.io.*;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -7,6 +8,7 @@ import java.util.Scanner;
 
 public class Main {
     public static void main(String[] args) {
+
         Scanner sc = new Scanner(System.in);
         int count = 0;
         List<Wise> write = new ArrayList<>();
@@ -15,6 +17,18 @@ public class Main {
             System.out.printf("명령) ");
             String i = sc.nextLine().trim();
             if(i.equals("종료")){
+                try (
+                        FileWriter fw = new FileWriter("test.txt", true);
+                        BufferedWriter bw = new BufferedWriter(fw);
+                ){
+                    for (int k=write.size()-1;k>=0;k--){
+                        bw.write(write.get(k).toString());
+                        bw.newLine();
+                    }
+                    bw.flush();
+                }catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
                 break;
             }else if(i.equals("등록")){
                 System.out.printf("명언 : ");
@@ -27,9 +41,24 @@ public class Main {
             }else if(i.equals("목록")){
                 System.out.println("번호 / 작가 / 명언");
                 System.out.println("--------------------------");
-                Collections.reverse(write);
-                for (Wise w :write){
-                    System.out.println(w.toString());
+
+                File f = new File("test.txt");
+                if(f.isFile()){
+                    try(
+                        FileReader rw = new FileReader("test.txt");
+                        BufferedReader br = new BufferedReader(rw);
+                    ){
+                        String readLine = null;
+                        while((readLine = br.readLine()) != null){
+                            System.out.println(readLine);
+                        }
+                    }catch (IOException e){
+                        System.out.println(e);
+                    }
+
+                }
+                for (int k=write.size()-1;k>=0;k--){
+                    System.out.println(write.get(k));
                 }
             }else if((i.contains("삭제?id="))==true){
                 int remove_id = Integer.parseInt(i.substring(6));
@@ -56,12 +85,11 @@ public class Main {
                 try{
                     System.out.println("명언(기존) : "+ get_correction_id.getWise());
                     System.out.printf("명언 : ");
-                    String i4 = sc.nextLine();
-                    get_correction_id.setWise(i4);
+                    get_correction_id.setWise(sc.nextLine());
+
                     System.out.println("작가(기존) : "+ get_correction_id.getWriter());
                     System.out.printf("작가 : ");
-                    String i5 = sc.nextLine();
-                    get_correction_id.setWriter(i5);
+                    get_correction_id.setWriter(sc.nextLine());
                 }catch(IndexOutOfBoundsException e){
                     System.out.println(correction_id+"번 명언은 존재하지 않습니다.");
                 }
