@@ -45,6 +45,26 @@ public class Main {
                 }catch(IndexOutOfBoundsException e){
                     System.out.println(remove_id+"번 명언은 존재하지 않습니다.");
                 }
+            }else if((i.contains("수정?id="))==true){
+                int correction_id = Integer.parseInt(i.substring(6));
+                Wise get_correction_id = null;
+                for (Wise w : write){
+                    if(w.getId() == correction_id){
+                        get_correction_id = w;
+                    }
+                }
+                try{
+                    System.out.println("명언(기존) : "+ get_correction_id.getWise());
+                    System.out.printf("명언 : ");
+                    String i4 = sc.nextLine();
+                    get_correction_id.setWise(i4);
+                    System.out.println("작가(기존) : "+ get_correction_id.getWriter());
+                    System.out.printf("작가 : ");
+                    String i5 = sc.nextLine();
+                    get_correction_id.setWriter(i5);
+                }catch(IndexOutOfBoundsException e){
+                    System.out.println(correction_id+"번 명언은 존재하지 않습니다.");
+                }
             }
         }
         sc.close();
@@ -65,6 +85,26 @@ class Wise{
 
     public int getId() {
         return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    public String getWise() {
+        return wise;
+    }
+
+    public void setWise(String wise) {
+        this.wise = wise;
+    }
+
+    public String getWriter() {
+        return writer;
+    }
+
+    public void setWriter(String writer) {
+        this.writer = writer;
     }
 
     @Override
