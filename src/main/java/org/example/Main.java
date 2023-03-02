@@ -31,6 +31,10 @@ public class Main {
                 for (Wise w :write){
                     System.out.println(w.toString());
                 }
+            }else if((i.contains("삭제?id="))==true){
+                int remove_id = Integer.parseInt(i.substring(6));
+                write.remove(remove_id-1);
+                System.out.println(remove_id+"번 명언이 삭제되었습니다.");
             }
         }
         sc.close();
